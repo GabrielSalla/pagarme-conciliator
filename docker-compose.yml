@@ -1,0 +1,53 @@
+version: '2.0'
+
+services:
+  postgres-test:
+    image: postgres:9.6.6-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=postgres
+
+  postgres-prod:
+    image: postgres:9.6.6-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+
+  pagarme-conciliator-test:
+    build:
+      context: .
+      dockerfile: Dockerfile-test
+    image: pagarme-conciliator-test
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./database-test.json:/app/database-test.json
+    depends_on:
+      - postgres-test
+    command: pytest .
+    env_file:
+      - environment_variables_test.env
+
+  pagarme-conciliator-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile-prod
+    image: pagarme-conciliator-prod
+    volumes:
+      - ./migrations:/app/migrations
+      - ./scripts:/app/scripts
+      - ./src:/app/src
+      - ./logs:/app/logs
+      - ./.session_id:/app/.session_id
+    command: python3 .
+    env_file:
+      - environment_variables.env
+
+  pagarme-conciliator-prod-local:
+    extends: pagarme-conciliator-prod
+    depends_on:
+      - postgres-prod

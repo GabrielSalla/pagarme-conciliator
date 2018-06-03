@@ -1,0 +1,4 @@
+FROM pagarme-conciliator-prod
+
+RUN pip3 --no-cache install -r requirements_tests.txt
+RUN pip3 --no-cache install -e .

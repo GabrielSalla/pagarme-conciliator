@@ -1,0 +1,9 @@
+{
+    "database-prod": {
+        "host": "postgres-test",
+        "user": "postgres",
+        "password": "postgres",
+        "database": "postgres",
+        "port": 5432
+    }
+}

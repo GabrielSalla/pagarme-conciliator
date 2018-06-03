@@ -1,0 +1,6 @@
+peewee==2.10.2
+peewee-async
+aiopg
+aiohttp
+pytz
+inquirer

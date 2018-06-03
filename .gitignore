@@ -1,0 +1,9 @@
+__pycache__/
+.pytest_cache/
+.cache
+*.egg-info/
+.tox/
+logs/
+*.log
+.coverage
+.session_id

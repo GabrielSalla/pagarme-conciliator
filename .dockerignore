@@ -1,0 +1,11 @@
+.git
+.cache
+.coverage
+.tox
+data
+logs
+*sublime*
+**/__pycache__
+**/*.egg-info
+**/*.pyc
+**/*.log

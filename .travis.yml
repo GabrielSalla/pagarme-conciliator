@@ -1,0 +1,38 @@
+language: python
+python:
+   - 3.6.4
+
+services:
+  - docker
+
+git:
+  submodules: false
+
+env:
+  DOCKER_COMPOSE_VERSION: 1.17.1
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+install:
+  - pip3 install pycodestyle
+  - make build-test
+
+before_script:
+  # Stop the current PostgreSQL service
+  - sudo service postgresql stop
+  # Wait for the process to stop
+  - while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
+  # Start the database
+  - docker-compose up -d postgres-test
+  # Wait 10 seconds for the database to be ready
+  - sleep 10
+
+script:
+  # Application test
+  - make test-docker
+  # PEP8 test
+  - pycodestyle .
